@@ -29,7 +29,7 @@ except ImportError:
     usb = None
 
 # Use Semantic Versioning, http://semver.org/
-version_info = (0, 0, 1, 'a2')
+version_info = (0, 0, 1, 'a3')
 __version__ = '.'.join(map(str, version_info))
 
 try:
@@ -197,10 +197,10 @@ def raw_to_image(data):
     im = Image.frombuffer('RGB', (width, height), raw_data, 'raw', 'RGB', 0, 1)
     """
     im = Image.new("RGB", (width, height))
-    for y in xrange(height):
+    for y in range(height):
         current_index = (width * (height - (y + 1)) * 2)
         y_dx = (height - y) - 1
-        for x in xrange(width):
+        for x in range(width):
             px1 = raw_data[current_index]
             px2 = raw_data[current_index + 1]
 
@@ -236,10 +236,10 @@ def image_to_raw(im):
     rawfile[0:8] = [16, 16, width_bin[0], width_bin[1], height_bin[0], height_bin[1], 1, 27]
     raw_index = 8
 
-    for y in xrange(height):
+    for y in range(height):
         current_index = raw_index + (width * (height - (y + 1)) * 2)
         y_dx = (height - y) - 1
-        for x in xrange(width):
+        for x in range(width):
             r, g, b = im.getpixel((x, y_dx))
 
             rgb565 = (int(float(r) / 255 * 31) << 11) | (int(float(g) / 255 * 63) << 5) | (int(float(b) / 255 * 31))
@@ -657,10 +657,10 @@ class LCDSysInfo(object):
         # Sanity check
         be_ui2 = '>H'
         width = header[2:2 + 2]
-        width = buffer(width)  # struct does not accept bytearray params
+        width = memoryview(width)  # struct does not accept bytearray params
         width = struct.unpack(be_ui2, width)[0]
         height = header[4:4 + 2]
-        height = buffer(height)
+        height = memoryview(height)
         height = struct.unpack(be_ui2, height)[0]
 
         if check_sizes:
